@@ -1,8 +1,8 @@
-import fs from 'node:fs/promises';
-import path from "path";
-const FILE = quotes.json;
-export { FILE };
+import { FILE_PATH } from './config.js';
+import { readFile, writeFile } from './config.js';
 
-//Read file function
 
-//Write file function
+export async function getQuotes() {
+    const quotes = await readFile();
+    return quotes;
+}
