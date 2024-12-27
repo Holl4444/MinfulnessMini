@@ -1,0 +1,19 @@
+{
+  "name": "mindfulnessmini",
+  "version": "1.0.0",
+  "description": "Inspiring quotes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Holl4444/MinfulnessMini.git"
+  },
+  "author": "Gobletzoo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Holl4444/MinfulnessMini/issues"
+  },
+  "homepage": "https://github.com/Holl4444/MinfulnessMini#readme"
+}
