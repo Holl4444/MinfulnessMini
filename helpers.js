@@ -40,12 +40,46 @@ export async function removeDoubledAndEmpty() {
   const quotes = await getQuotes();
   const uniqueQuotes = [];
   const seenQuotes = new Set();
+  const removedQuotes = [];
   for (const q of quotes) {
     if (q.Quote && !seenQuotes.has(q.Quote)) {
       seenQuotes.add(q.Quote);
       uniqueQuotes.push(q);
+    } else {
+      removedQuotes.push(q);
     }
   }
-  console.log(uniqueQuotes);
-  return uniqueQuotes;
+  console.log(
+    `quotes length: ${quotes.length}\ Unique quotes length: ${uniqueQuotes.length}`
+  );
+  return [
+    uniqueQuotes,
+    removedQuotes,
+    quotes.length - uniqueQuotes.length,
+  ];
+}
+
+export async function deleteDoubledAndEmpty() {
+  try {
+    const cleanAndRemoved = await removeDoubledAndEmpty();
+    const [cleanQuotes, removedQuotes, numRemoved] = cleanAndRemoved;
+ 
+    if (numRemoved > 0) {
+      await writeFile(cleanQuotes);
+      return {
+        numRemoved: numRemoved,
+        removedQuotes: removedQuotes,
+        cleanQuotes: cleanQuotes,
+      };
+    }
+    console.log('No duplicates or empty quotes found');
+    return {
+      numRemoved: 0,
+      removedQuotes: [],
+      cleanQuotes: cleanQuotes,
+    };
+  } catch (err) {
+    console.log(`Could not clean the quotes object: ${err.message}`);
+    return null;
+  }
 }
