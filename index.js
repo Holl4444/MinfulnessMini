@@ -10,7 +10,8 @@ import {
   getQuotes,
   getQuotesByKeyword,
   getQuoteAndAuthor,
-  getRandomIndex
+  getRandomIndex,
+  removeDoubledAndEmpty,
 } from './helpers.js';
 
 server.listen(PORT, () => {
@@ -49,7 +50,6 @@ app.get('/quotes', async function (req, res) {
   }
 });
 
-
 // Filters for the keyword in tags then responds with the quotes in quote/author only format
 app.get('/quotes/:keyword', async function (req, res) {
   try {
@@ -68,3 +68,12 @@ app.get('/quotes/:keyword', async function (req, res) {
     res.status(502).send('Bad Gateway');
   }
 });
+
+//delete doubled quotes
+//Find doubled or empty quotes and delete them
+app.delete('/quotes', async function (req, res) {
+  try {
+  } catch (err) {}
+});
+
+removeDoubledAndEmpty();

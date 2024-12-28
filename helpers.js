@@ -16,7 +16,7 @@ export async function getQuotesByKeyword(keyword) {
     return keyQuotes;
   } catch (err) {
     console.error('Error fetching quotes by keyword:', err);
-      return [];
+    return [];
   }
 }
 
@@ -24,13 +24,28 @@ export async function getQuotesByKeyword(keyword) {
 export function getQuoteAndAuthor(quotes) {
   return quotes.map((quote) => {
     return {
-      Quote: quote.Quote || "No quote Available",
-      Author: quote.Author || "Unknown",
+      Quote: quote.Quote || 'No quote Available',
+      Author: quote.Author || 'Unknown',
     };
   });
 }
 
 export function getRandomIndex(length) {
-    const index = Math.floor(Math.random() * length);
-    return index;
+  const index = Math.floor(Math.random() * length);
+  return index;
+}
+
+// Find empty or repeated quotes
+export async function removeDoubledAndEmpty() {
+  const quotes = await getQuotes();
+  const uniqueQuotes = [];
+  const seenQuotes = new Set();
+  for (const q of quotes) {
+    if (q.Quote && !seenQuotes.has(q.Quote)) {
+      seenQuotes.add(q.Quote);
+      uniqueQuotes.push(q);
+    }
+  }
+  console.log(uniqueQuotes);
+  return uniqueQuotes;
 }
