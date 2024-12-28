@@ -8,6 +8,22 @@ const server = http.createServer(app);
 
 import { getQuotes } from './helpers.js';
 
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+// Error handling for listen - more flexible than  a callback handler on app.listen.
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use.`);
+    // Optionally, you could attempt to listen on a different port or exit the application
+    process.exit(1); // Exit the process with a failure code
+  } else {
+    console.error(`Server error: ${err}`);
+    process.exit(1); // Exit the process with a failure code for other errors
+  }
+});
+
 app.get('/', function (req, res) {
   try {
     res.status(200).send("Hi! How're you feeling?");
@@ -24,21 +40,5 @@ app.get('/quotes', async function (req, res) {
   } catch (err) {
     console.error('Error fetching quotes:', err);
     res.status(502).send('Bad Gateway');
-  }
-});
-
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-// Error handling for listen - more flexible than  a callback handler on app.listen.
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use.`);
-    // Optionally, you could attempt to listen on a different port or exit the application
-    process.exit(1); // Exit the process with a failure code
-  } else {
-    console.error(`Server error: ${err}`);
-    process.exit(1); // Exit the process with a failure code for other errors
   }
 });
