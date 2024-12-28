@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { promises as fs } from 'fs'; 
+import { promises as fs } from 'fs';
 
 export const FILE_PATH = path.resolve(process.cwd(), 'quotes.json');
 // What happens in the code:
@@ -8,9 +8,9 @@ export const FILE_PATH = path.resolve(process.cwd(), 'quotes.json');
 // This full absolute path is assigned to the FILEPATH constant.
 // The FILEPATH constant is then exported so it can be used in other files/modules.
 // Example:
-// If the current working directory is /home/user/project, and 'albums.json' is in the same directory, path.resolve() would return /home/user/project/albums.json.
+// If the current working directory is /home/user/project, and 'quotes.json' is in the same directory, path.resolve() would return /home/user/project/quotes.json.
 
-// This line is essentially providing an absolute file path to the albums.json file
+// This line is essentially providing an absolute file path to the quotes.json file
 
 //Read file function
 //Make an async function
