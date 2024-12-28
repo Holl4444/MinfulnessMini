@@ -11,7 +11,7 @@ import {
   getQuotesByKeyword,
   getQuoteAndAuthor,
   getRandomIndex,
-  removeDoubledAndEmpty,
+  deleteDoubledAndEmpty,
 } from './helpers.js';
 
 server.listen(PORT, () => {
@@ -73,7 +73,19 @@ app.get('/quotes/:keyword', async function (req, res) {
 //Find doubled or empty quotes and delete them
 app.delete('/quotes', async function (req, res) {
   try {
-  } catch (err) {}
+    //Get quotes minus repeated/empty
+    //Overwrite quotes.
+    const outcome = await deleteDoubledAndEmpty();
+    if (outcome === null) {
+      return res
+        .status(500)
+        .send("Couldn't remove invalid quotes at this time");
+    }
+    //respond with no removed quotes, the removed quotes and the new cleaned quote object or an empty array and no doubles message.
+    res.status(200).json(outcome);
+  } catch (err) {
+    res
+      .status(500)
+      .send(`Couldn't delete quotes at this time: ${err}`);
+  }
 });
-
-removeDoubledAndEmpty();
