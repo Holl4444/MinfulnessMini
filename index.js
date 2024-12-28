@@ -6,21 +6,25 @@ const PORT = 5001;
 import http from 'http';
 const server = http.createServer(app);
 
-import { getQuotes } from './helpers.js';
+import {
+  getQuotes,
+  getQuotesByKeyword,
+  getQuoteAndAuthor,
+} from './helpers.js';
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// Error handling for listen - more flexible than  a callback handler on app.listen.
+// Error handling for listen - more flexible than a callback handler on app.listen.
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`Port ${PORT} is already in use.`);
-    // Optionally, you could attempt to listen on a different port or exit the application
-    process.exit(1); // Exit the process with a failure code
+    // Exit the process with a failure code
+    process.exit(1);
   } else {
     console.error(`Server error: ${err}`);
-    process.exit(1); // Exit the process with a failure code for other errors
+    process.exit(1);
   }
 });
 
@@ -32,13 +36,33 @@ app.get('/', function (req, res) {
   }
 });
 
-// Get all quotes
+// Get all quotes and respond with quote/author format
 app.get('/quotes', async function (req, res) {
   try {
     const quotes = await getQuotes();
-    res.status(200).json(quotes);
+    const cleanQuotes = await getQuoteAndAuthor(quotes);
+    res.status(200).json(cleanQuotes);
   } catch (err) {
     console.error('Error fetching quotes:', err);
+    res.status(502).send('Bad Gateway');
+  }
+});
+
+
+// Filters for the keyword in tags then responds with the quotes in quote/author only format
+app.get('/quotes/:keyword', async function (req, res) {
+  try {
+    //Get quotes relevant to keyword
+    const quotes = await getQuotesByKeyword(req.params.keyword);
+    if (quotes.length === 0) {
+      // If no quotes were found, return 404
+      return res.status(404).send('No quotes found for this keyword');
+    }
+    const cleanQuotes = await getQuoteAndAuthor(quotes);
+    // Fill response body with them
+    res.status(200).json(cleanQuotes);
+  } catch (err) {
+    console.log('Error fetching the quotes:', err);
     res.status(502).send('Bad Gateway');
   }
 });
