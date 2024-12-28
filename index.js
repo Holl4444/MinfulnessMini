@@ -12,7 +12,7 @@ app.get('/', function (req, res) {
   try {
     res.status(200).send("Hi! How're you feeling?");
   } catch (err) {
-    res.status(500).send("Some bad juju on our end");
+    res.status(500).send('Some bad juju on our end');
   }
 });
 
@@ -22,7 +22,8 @@ app.get('/quotes', async function (req, res) {
     const quotes = await getQuotes();
     res.status(200).json(quotes);
   } catch (err) {
-    res.status(502).send("Bad Gateway");
+    console.error('Error fetching quotes:', err);
+    res.status(502).send('Bad Gateway');
   }
 });
 
@@ -30,8 +31,7 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-
-// Error handling
+// Error handling for listen - more flexible than  a callback handler on app.listen.
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`Port ${PORT} is already in use.`);
