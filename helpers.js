@@ -1,4 +1,3 @@
-import { FILE_PATH } from './config.js';
 import { readFile, writeFile } from './config.js';
 
 export async function getQuotes() {
@@ -63,7 +62,7 @@ export async function deleteDoubledAndEmpty() {
   try {
     const cleanAndRemoved = await removeDoubledAndEmpty();
     const [cleanQuotes, removedQuotes, numRemoved] = cleanAndRemoved;
- 
+
     if (numRemoved > 0) {
       await writeFile(cleanQuotes);
       return {
