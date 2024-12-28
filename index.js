@@ -10,6 +10,7 @@ import {
   getQuotes,
   getQuotesByKeyword,
   getQuoteAndAuthor,
+  getRandomIndex
 } from './helpers.js';
 
 server.listen(PORT, () => {
@@ -59,6 +60,7 @@ app.get('/quotes/:keyword', async function (req, res) {
       return res.status(404).send('No quotes found for this keyword');
     }
     const cleanQuotes = await getQuoteAndAuthor(quotes);
+    //TEST random func: console.log(getRandomIndex(quotes.length));
     // Fill response body with them
     res.status(200).json(cleanQuotes);
   } catch (err) {

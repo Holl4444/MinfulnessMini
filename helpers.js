@@ -29,3 +29,8 @@ export function getQuoteAndAuthor(quotes) {
     };
   });
 }
+
+export function getRandomIndex(length) {
+    const index = Math.floor(Math.random() * length);
+    return index;
+}
