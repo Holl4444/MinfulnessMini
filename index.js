@@ -10,7 +10,7 @@ import {
   getQuotes,
   getQuotesByKeyword,
   getQuoteAndAuthor,
-  getRandomIndex,
+  getRandomQuote,
   deleteDoubledAndEmpty,
 } from './helpers.js';
 
@@ -30,27 +30,40 @@ server.on('error', (err) => {
   }
 });
 
-app.get('/', function (req, res) {
+// Get a random quote from all that match the keyword
+app.get('/quotes/:keyword/random', async function (req, res) {
   try {
-    res.status(200).send("Hi! How're you feeling?");
+    console.log(`Received request for keyword ${req.params.keyword}`);
+    const keyQuotes = await getQuotesByKeyword(req.params.keyword);
+    if (keyQuotes.length === 0) {
+      return res.status(404).send('No quotes found for this keyword');
+    }
+    const randomKeyQuote = getRandomQuote(keyQuotes);
+    res.status(200).json(randomKeyQuote);
   } catch (err) {
-    res.status(500).send('Some bad juju on our end');
+    console.log('Error fetching quote: ', err.message);
+    res.status(500).send('Internal Server Error');
   }
 });
 
-// Get all quotes and respond with quote/author format
-app.get('/quotes', async function (req, res) {
+// Get a random quote from amongst all the quotes
+app.get('/quotes/random', async function (req, res) {
   try {
+    //Get all quotes from source
     const quotes = await getQuotes();
-    const cleanQuotes = await getQuoteAndAuthor(quotes);
-    res.status(200).json(cleanQuotes);
+    //can't find any send error
+    if (quotes.length === 0) {
+      return res.status(404).send('No quotes found');
+    }
+    const randomQuote = getRandomQuote(quotes);
+    res.status(200).json(randomQuote);
   } catch (err) {
-    console.error('Error fetching quotes:', err);
-    res.status(502).send('Bad Gateway');
+    console.log('Error fetching quote: ', err.message);
+    res.status(500).send('Internal Server Error');
   }
 });
 
-// Filters for the keyword in tags then responds with the quotes in quote/author only format
+// Filters for the keyword in tags then responds with all matching quotes in quote/author only format
 app.get('/quotes/:keyword', async function (req, res) {
   try {
     //Get quotes relevant to keyword
@@ -66,6 +79,26 @@ app.get('/quotes/:keyword', async function (req, res) {
   } catch (err) {
     console.log('Error fetching the quotes:', err);
     res.status(502).send('Bad Gateway');
+  }
+});
+
+// Get all quotes and respond with quote/author format
+app.get('/quotes', async function (req, res) {
+  try {
+    const quotes = await getQuotes();
+    const cleanQuotes = await getQuoteAndAuthor(quotes);
+    res.status(200).json(cleanQuotes);
+  } catch (err) {
+    console.error('Error fetching quotes:', err);
+    res.status(502).send('Bad Gateway');
+  }
+});
+
+app.get('/', function (req, res) {
+  try {
+    res.status(200).send("Hi! How're you feeling?");
+  } catch (err) {
+    res.status(500).send('Some bad juju on our end');
   }
 });
 
