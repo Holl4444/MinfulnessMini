@@ -19,6 +19,20 @@ export async function getQuotesByKeyword(keyword) {
   }
 }
 
+// Filter for quotes with tags that include the given keyword
+export async function getQuotesByCategory(category) {
+  try {
+    const quotes = await getQuotes();
+    const categoryQuotes = quotes.filter(
+      (quote) => quote.Category && quote.Category.includes(category)
+    );
+    return categoryQuotes;
+  } catch (err) {
+    console.error('Error fetching quotes by keyword:', err);
+    return [];
+  }
+}
+
 // Filter out tags
 export function getQuoteAndAuthor(quotes) {
   return quotes.map((quote) => {
@@ -29,11 +43,24 @@ export function getQuoteAndAuthor(quotes) {
   });
 }
 
+export function getSingleQuoteAndAuthor(quote) {
+  return {
+    Quote: quote.Quote || 'No quote Available',
+    Author: quote.Author || 'Unknown',
+  };
+}
+
 export function getRandomIndex(length) {
   const index = Math.floor(Math.random() * length);
   return index;
 }
 
+export function getRandomQuote(quoteArray) {
+  const randomIndex = getRandomIndex(quoteArray.length);
+  const randomQuote = quoteArray[randomIndex];
+  const slimQuote = getSingleQuoteAndAuthor(randomQuote);
+  return slimQuote;
+}
 // Find empty or repeated quotes
 export async function removeDoubledAndEmpty() {
   const quotes = await getQuotes();
